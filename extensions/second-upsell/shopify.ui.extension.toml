@@ -1,5 +1,5 @@
 type = "checkout_ui_extension"
-name = "text-extension"
+name = "second-upsell"
 
 extension_points = [
   'Checkout::Dynamic::Render'
