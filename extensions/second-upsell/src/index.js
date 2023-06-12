@@ -3,10 +3,8 @@ import {
 	Text,
 	InlineLayout,
 	BlockStack,
-	Divider,
 	Image,
 	Banner,
-	Heading,
 	Button,
 	SkeletonImage,
 	SkeletonText,
@@ -98,12 +96,18 @@ import {
 		root.appendChild(loadingState);
 	  }
   
+
+
+
+
+
 	  // Initialize the components to render for the product offer
 	  // You'll need to manually bind data to them, this happens within the `renderApp` helper
 	  const imageComponent = root.createComponent(Image, {
 		border: "base",
 		borderWidth: "base",
-		borderRadius: "loose",
+		cornerRadius: 'base',
+		borderRadius: 'large',
 		aspectRatio: 1,
 		source: "",
 	  });
@@ -116,7 +120,7 @@ import {
 		Button,
 		{
 		  kind: "secondary",
-		  appearance: 'accent'
+		  appearance: "interactive",
 		  loading: false,
 		  onPress: async () => {
 			addButtonComponent.updateProps({ loading: true });
@@ -152,6 +156,11 @@ import {
 		},
 		["Add"]
 	  );
+
+
+
+
+	  
   
 	  // Defines the main app responsible for rendering a product offer
 	  const app = root.createComponent(BlockStack, { spacing: "loose" }, [
@@ -166,6 +175,9 @@ import {
 			  // Button: column should "auto" size based on the intrinsic width of the elements
 			  columns: [64, "fill", "auto"],
 			  blockAlignment: "center",
+			  border: "base",
+			  cornerRadius: "fullyRounded",
+			  padding: "loose",
 			},
 			[
 			  imageComponent,
@@ -175,7 +187,7 @@ import {
 				  { size: "small", emphasis: "bold" },
 				  [titleMarkup]
 				),
-				root.createComponent(Text, { appearance: "subdued" }, [
+				root.createComponent(Text, { size:"small", appearance: "subdued" }, [
 				  priceMarkup,
 				]),
 			  ]),
