@@ -1,12 +1,216 @@
-import { extend, Banner } from "@shopify/checkout-ui-extensions";
+import {
+	extend,
+	BlockStack,
+	View,
+	InlineLayout,
+	InlineStack,
+	Image,
+	Pressable,
+	Icon,
+	Text,
+	TextField,
+	Form,
+	Button,
+	Disclosure,
+	Divider,
+	Checkbox,
+  } from '@shopify/checkout-ui-extensions';
+  
 
-extend("Checkout::Dynamic::Render", (root, { extensionPoint, i18n }) => {
-  root.appendChild(
-    root.createComponent(
-      Banner,
-      { title: "donations-widget" },
-      i18n.translate('welcome', {extensionPoint})
-    )
-  );
-  root.mount();
-});
+  extend('Checkout::Dynamic::Render', (root) => {
+	const openIds = ['one'];
+  
+	const checkDrop = root.createComponent(
+		  InlineLayout,
+		  {
+			blockAlignment: 'center',
+			spacing: 'base',
+			columns: ['auto', 'fill'],
+			padding: 'loose',
+		  },
+		  [
+			root.createComponent(Checkbox, {
+			  toggles: 'one',
+			}),
+			'Show your support for the Carry On Foundation.',
+		  ],
+	);
+  
+
+
+
+
+
+	const disclosureView = root.createComponent(
+	  View,
+	  {
+		id: 'one',
+		padding: ['none', 'base', 'base', 'base'],
+	  },
+	  [
+		root.createComponent(
+		  Form,
+		  {
+			onSubmit: () =>
+			  console.log('onSubmit event'),
+		  },
+		  [
+			root.createComponent(BlockStack, {}, [
+			  root.createComponent(
+				InlineLayout,
+				{
+				  columns: ['fill', 'fill'],
+				  spacing: 'base',
+				},
+				[
+				  root.createComponent(TextField, {
+					label: 'From',
+					name: 'from0',
+					id: 'from0',
+				  }),
+				  root.createComponent(TextField, {
+					label: 'To',
+					name: 'to0',
+					id: 'to0',
+				  }),
+
+				  root.createComponent(TextField, {
+					label: 'Message',
+					name: 'message0',
+					id: 'message0',
+				  }),
+				],
+			  ),
+
+			  root.createComponent(
+				InlineLayout,
+				{
+				  columns: ['fill', 'fill'],
+				  spacing: 'base',
+				},
+				[
+					root.createComponent(TextField, {
+						label: 'Message',
+						name: 'message0',
+						id: 'message0',
+					  }),
+		
+					  root.createComponent(View, {}, [
+						root.createComponent(
+						  Button,
+						  {
+							accessibilityRole: 'submit',
+							kind: 'secondary',
+						  },
+						  'Save',
+						),
+					  ]),
+				],
+			  ),
+
+
+
+			]),
+		  ],
+		),
+	  ],
+	);
+  
+	const disclosure = root.createComponent(
+	  Disclosure,
+	  {
+		defaultOpen: 'one',
+		onToggle: (open) =>
+		  console.log('onToggle event', open),
+	  },
+	  [checkDrop, disclosureView],
+	);
+
+
+
+  
+	const inlineLayout = root.createComponent(
+	  InlineLayout,
+	  {
+		blockAlignment: 'baseline',
+		spacing: 'base',
+		columns: ['auto', 'fill', 'auto'],
+		padding: 'base',
+	  },
+	  [
+		root.createComponent(Icon, {
+		  source: 'profile',
+		  appearance: 'subdued',
+		}),
+		root.createComponent(
+		  BlockStack,
+		  {
+			spacing: 'none',
+		  },
+		  [
+			root.createComponent(
+			  InlineStack,
+			  {
+				blockAlignment: 'center',
+			  },
+			  [
+				root.createComponent(
+				  Text,
+				  {},
+				  'Verify with',
+				),
+				root.createComponent(Image, {
+				  source:
+					'https://via.placeholder.com/50x15',
+				}),
+			  ],
+			),
+			root.createComponent(
+			  Text,
+			  {
+				appearance: 'subdued',
+				size: 'small',
+			  },
+			  '15% savings for students and military',
+			),
+		  ],
+		),
+		root.createComponent(
+		  Pressable,
+		  {
+			to: 'https://www.shopify.com',
+		  },
+		  [
+			root.createComponent(Icon, {
+			  source: 'external',
+			  appearance: 'subdued',
+			}),
+		  ],
+		),
+	  ],
+	);
+	const view = root.createComponent(
+	  View,
+	  {
+		maxInlineSize: 400,
+		cornerRadius: 'large',
+		border: 'base',
+	  },
+	  [
+		root.createComponent(
+		  BlockStack,
+		  {
+			spacing: 'none',
+		  },
+		  [
+			disclosure,
+			root.createComponent(Divider),
+			inlineLayout,
+		  ],
+		),
+	  ],
+	);
+  
+	root.appendChild(view);
+  });
+  
