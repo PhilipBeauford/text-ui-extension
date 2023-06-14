@@ -14,12 +14,16 @@ import {
 	Disclosure,
 	Divider,
 	Checkbox,
+	Select,
+	Banner,
   } from '@shopify/checkout-ui-extensions';
   
 
-  extend('Checkout::Dynamic::Render', (root) => {
+  extend('Checkout::Dynamic::Render', (root, { lines, applyCartLinesChange, query, i18n }) => {
 	const openIds = ['one'];
   
+
+
 	const checkDrop = root.createComponent(
 		  InlineLayout,
 		  {
@@ -27,16 +31,93 @@ import {
 			spacing: 'base',
 			columns: ['auto', 'fill'],
 			padding: 'loose',
+			border: ['none', 'none', 'none', 'none'],
 		  },
 		  [
 			root.createComponent(Checkbox, {
-			  toggles: 'one',
+			  toggles: "one",
+			  checked: "",
+			  onChange: () => {
+				if( checkDrop.children[0].props.checked == "") {
+					checkDrop.updateProps({ border: ['none', 'none', 'base', 'none']});
+
+                    checkDrop.children[0].updateProps( {checked: "false"})
+
+					console.log('checkdrop true?', checkDrop);
+
+				} else if(checkDrop.children[0].props.checked == 'false') {
+					checkDrop.updateProps({ border: ['none', 'none', 'none', 'none']});
+
+					checkDrop.children[0].updateProps( {checked: ""})
+
+					console.log('checkdrop false?', checkDrop);
+
+				}
+
+			  }
 			}),
 			'Show your support for the Carry On Foundation.',
 		  ],
 	);
   
 
+	console.log('checkbox checkDrop', checkDrop);
+	
+
+
+	const selector = 	root.createComponent(Select, {
+		label: 'Custom Donation',
+		value: 1,
+		id: 'donate-select',
+		options: 
+		[
+			{
+				value: 1,
+				label: '$1',
+			},
+			{
+				value: 2,
+				label: '$2',
+			},
+			{
+				value: 3,
+				label: '$3',
+			},
+			{
+				value: 4,
+				label: '$4',
+			},
+			{
+				value: 5,
+				label: '$5',
+			},
+			{
+				value: 6,
+				label: '$6',
+			},
+			{
+				value: 7,
+				label: '$7',
+			},
+			{
+				value: 8,
+				label: '$8',
+			},
+			{
+				value: 9,
+				label: '$9',
+			},
+			{
+				value: 10,
+				label: '$10',
+			},
+		],
+		onChange: (value) => {
+			selector.updateProps({value: parseInt(value)});
+		}
+	  })
+
+console.log('selector', selector);
 
 
 
@@ -44,8 +125,8 @@ import {
 	const disclosureView = root.createComponent(
 	  View,
 	  {
-		id: 'one',
-		padding: ['none', 'base', 'base', 'base'],
+		id: "one",
+		padding: ['base', 'base', 'base', 'base'],
 	  },
 	  [
 		root.createComponent(
@@ -55,60 +136,102 @@ import {
 			  console.log('onSubmit event'),
 		  },
 		  [
+
 			root.createComponent(BlockStack, {}, [
 			  root.createComponent(
 				InlineLayout,
 				{
 				  columns: ['fill', 'fill'],
-				  spacing: 'base',
+				  spacing: 'none',
 				},
 				[
-				  root.createComponent(TextField, {
-					label: 'From',
-					name: 'from0',
-					id: 'from0',
-				  }),
-				  root.createComponent(TextField, {
-					label: 'To',
-					name: 'to0',
-					id: 'to0',
-				  }),
 
-				  root.createComponent(TextField, {
-					label: 'Message',
-					name: 'message0',
-					id: 'message0',
-				  }),
+				  root.createComponent(Button, {
+					type: 'secondary',
+					id: 'Button2',
+					onPress: () => {
+						selector.updateProps({ value: 2 });
+					}
+				  }, '$2'),
+
+				  root.createComponent(Button, {
+					type: 'secondary',
+					id: 'Button5',
+					onPress: () => {
+						selector.updateProps({ value: 5 });
+					}
+				  }, '$5'),
+
+				  root.createComponent(Button, {
+					type: 'secondary',
+					id: 'Button10',
+					onPress: () => {
+						selector.updateProps({ value: 10 });
+					}
+				  }, '$10'),
+
 				],
 			  ),
 
 			  root.createComponent(
 				InlineLayout,
 				{
-				  columns: ['fill', 'fill'],
+				  columns: ['fill', 'auto'],
 				  spacing: 'base',
 				},
 				[
-					root.createComponent(TextField, {
-						label: 'Message',
-						name: 'message0',
-						id: 'message0',
-					  }),
-		
+
+
+					selector,
+
 					  root.createComponent(View, {}, [
 						root.createComponent(
 						  Button,
 						  {
 							accessibilityRole: 'submit',
 							kind: 'secondary',
+							onPress: async () => {;
+					  
+								// Apply the cart lines change
+								const result = await applyCartLinesChange({
+								  type: "addCartLine",
+								  merchandiseId: 'gid://shopify/ProductVariant/45393245176115',
+								  quantity: parseInt(selector.props.value),
+								});
+					  					  
+								if (result.type === "error") {
+								  // An error occurred adding the cart line
+								  // Verify that you're using a valid product variant ID
+								  // For example, 'gid://shopify/ProductVariant/123'
+								  console.error('error', result.message);
+								  const errorComponent = root.createComponent(
+									Banner,
+									{ status: "critical" },
+									["There was an issue adding this product. Please try again."]
+								  );
+								  // Render an error Banner as a child of the top-level app component for three seconds, then remove it
+								  const topLevelComponent = root.children[0];
+								  topLevelComponent.appendChild(errorComponent);
+								  setTimeout(
+									() => topLevelComponent.removeChild(errorComponent),
+									3000
+								  );
+								}
+							  },
 						  },
-						  'Save',
+						  'Update Donation',
 						),
 					  ]),
 				],
 			  ),
 
-
+			  root.createComponent(
+				Text,
+				{
+					size: 'base'
+				},
+				'Thank you for your donation!'
+			  )
 
 			]),
 		  ],
@@ -116,83 +239,40 @@ import {
 	  ],
 	);
   
-	const disclosure = root.createComponent(
+
+
+	// disclosure is a drop-down container
+	// both checkbox 'div' & entire disclosureView are rendered by this one disclosure/dropdown
+	const donationWidget = root.createComponent(
 	  Disclosure,
 	  {
-		defaultOpen: 'one',
-		onToggle: (open) =>
-		  console.log('onToggle event', open),
+		open: 'false',
+		onToggle: (open) => {
+			if (donationWidget.props.open == "false") {
+				donationWidget.updateProps({open: 'one'})
+				console.log('opened?', donationWidget.props.open);
+			} else {
+				donationWidget.updateProps({open: 'false'})
+				console.log('closed?', donationWidget.props.open);
+
+			}
+
+
+		}
 	  },
 	  [checkDrop, disclosureView],
 	);
 
+console.log('donate widget', donationWidget);
 
 
-  
-	const inlineLayout = root.createComponent(
-	  InlineLayout,
-	  {
-		blockAlignment: 'baseline',
-		spacing: 'base',
-		columns: ['auto', 'fill', 'auto'],
-		padding: 'base',
-	  },
-	  [
-		root.createComponent(Icon, {
-		  source: 'profile',
-		  appearance: 'subdued',
-		}),
-		root.createComponent(
-		  BlockStack,
-		  {
-			spacing: 'none',
-		  },
-		  [
-			root.createComponent(
-			  InlineStack,
-			  {
-				blockAlignment: 'center',
-			  },
-			  [
-				root.createComponent(
-				  Text,
-				  {},
-				  'Verify with',
-				),
-				root.createComponent(Image, {
-				  source:
-					'https://via.placeholder.com/50x15',
-				}),
-			  ],
-			),
-			root.createComponent(
-			  Text,
-			  {
-				appearance: 'subdued',
-				size: 'small',
-			  },
-			  '15% savings for students and military',
-			),
-		  ],
-		),
-		root.createComponent(
-		  Pressable,
-		  {
-			to: 'https://www.shopify.com',
-		  },
-		  [
-			root.createComponent(Icon, {
-			  source: 'external',
-			  appearance: 'subdued',
-			}),
-		  ],
-		),
-	  ],
-	);
-	const view = root.createComponent(
+
+
+	// Main app that contains the donation widget.. which contains all fields, wrapped as one 'box' using border
+	const donationsContainer = root.createComponent(
 	  View,
 	  {
-		maxInlineSize: 400,
+		maxInlineSize: 'fill',
 		cornerRadius: 'large',
 		border: 'base',
 	  },
@@ -203,14 +283,12 @@ import {
 			spacing: 'none',
 		  },
 		  [
-			disclosure,
-			root.createComponent(Divider),
-			inlineLayout,
+			donationWidget,
 		  ],
 		),
 	  ],
 	);
   
-	root.appendChild(view);
+	root.appendChild(donationsContainer);
   });
   
