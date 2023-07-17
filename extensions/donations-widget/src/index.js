@@ -16,13 +16,11 @@ import {
 	Checkbox,
 	Select,
 	Banner,
-  } from '@shopify/checkout-ui-extensions';
-  
+} from '@shopify/checkout-ui-extensions';
+
 
   extend('Checkout::Dynamic::Render', (root, { lines, applyCartLinesChange, query, i18n }) => {
 	const openIds = ['one'];
-  
-
 
 	const checkDrop = root.createComponent(
 		  InlineLayout,
@@ -40,29 +38,17 @@ import {
 			  onChange: () => {
 				if( checkDrop.children[0].props.checked == "") {
 					checkDrop.updateProps({ border: ['none', 'none', 'base', 'none']});
-
-                    checkDrop.children[0].updateProps( {checked: "false"})
-
-					console.log('checkdrop true?', checkDrop);
+					checkDrop.children[0].updateProps( {checked: "false"})
 
 				} else if(checkDrop.children[0].props.checked == 'false') {
 					checkDrop.updateProps({ border: ['none', 'none', 'none', 'none']});
-
 					checkDrop.children[0].updateProps( {checked: ""})
-
-					console.log('checkdrop false?', checkDrop);
-
 				}
-
 			  }
 			}),
 			'Show your support for the Carry On Foundation.',
 		  ],
 	);
-  
-
-	console.log('checkbox checkDrop', checkDrop);
-	
 
 
 	const selector = 	root.createComponent(Select, {
@@ -112,14 +98,8 @@ import {
 				label: '$10',
 			},
 		],
-		onChange: (value) => {
-			selector.updateProps({value: parseInt(value)});
-		}
+		onChange: (value) => { selector.updateProps({value: parseInt(value)}); }
 	  })
-
-console.log('selector', selector);
-
-
 
 
 	const disclosureView = root.createComponent(
@@ -136,7 +116,6 @@ console.log('selector', selector);
 			  console.log('onSubmit event'),
 		  },
 		  [
-
 			root.createComponent(BlockStack, {}, [
 			  root.createComponent(
 				InlineLayout,
@@ -180,8 +159,6 @@ console.log('selector', selector);
 				  spacing: 'base',
 				},
 				[
-
-
 					selector,
 
 					  root.createComponent(View, {}, [
@@ -191,14 +168,14 @@ console.log('selector', selector);
 							accessibilityRole: 'submit',
 							kind: 'secondary',
 							onPress: async () => {;
-					  
+
 								// Apply the cart lines change
 								const result = await applyCartLinesChange({
 								  type: "addCartLine",
 								  merchandiseId: 'gid://shopify/ProductVariant/45393245176115',
 								  quantity: parseInt(selector.props.value),
 								});
-					  					  
+
 								if (result.type === "error") {
 								  // An error occurred adding the cart line
 								  // Verify that you're using a valid product variant ID
@@ -217,6 +194,7 @@ console.log('selector', selector);
 									3000
 								  );
 								}
+
 							  },
 						  },
 						  'Update Donation',
@@ -232,13 +210,11 @@ console.log('selector', selector);
 				},
 				'Thank you for your donation!'
 			  )
-
 			]),
 		  ],
 		),
 	  ],
 	);
-  
 
 
 	// disclosure is a drop-down container
@@ -250,22 +226,13 @@ console.log('selector', selector);
 		onToggle: (open) => {
 			if (donationWidget.props.open == "false") {
 				donationWidget.updateProps({open: 'one'})
-				console.log('opened?', donationWidget.props.open);
 			} else {
 				donationWidget.updateProps({open: 'false'})
-				console.log('closed?', donationWidget.props.open);
-
 			}
-
-
 		}
 	  },
 	  [checkDrop, disclosureView],
 	);
-
-console.log('donate widget', donationWidget);
-
-
 
 
 	// Main app that contains the donation widget.. which contains all fields, wrapped as one 'box' using border
@@ -291,4 +258,3 @@ console.log('donate widget', donationWidget);
   
 	root.appendChild(donationsContainer);
   });
-  

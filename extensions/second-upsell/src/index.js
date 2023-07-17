@@ -9,7 +9,8 @@ import {
 	SkeletonImage,
 	SkeletonText,
   } from "@shopify/checkout-ui-extensions";
-  
+
+
   // Set up the entry point for the extension
   extend(
 	"Checkout::Dynamic::Render",
@@ -18,7 +19,7 @@ import {
 	  let products = [];
 	  let loading = true;
 	  let appRendered = false;
-  
+
 	  // Use the `query` API method to send graphql queries to the Storefront API
 	  query(
 		`query ($first: Int!) {
@@ -56,10 +57,12 @@ import {
 		  // Call the `renderApp()` helper to filter, data-bind, and render the products on offer
 		  renderApp();
 		});
-  
+
+
 	  // Manually subscribe to changes to cart lines. This calls the `renderApp` helper function when the cart lines have changed
 	  lines.subscribe(() => renderApp());
-  
+
+
 	  // Show a loading UI if you're waiting for product variant data
 	  // Use Skeleton components to keep placement from shifting when content loads
 	  const loadingState = root.createComponent(
@@ -95,10 +98,6 @@ import {
 	  if (loading) {
 		root.appendChild(loadingState);
 	  }
-  
-
-
-
 
 
 	  // Initialize the components to render for the product offer
@@ -158,10 +157,6 @@ import {
 	  );
 
 
-
-
-	  
-  
 	  // Defines the main app responsible for rendering a product offer
 	  const app = root.createComponent(BlockStack, { spacing: "loose" }, [
 		root.createComponent(BlockStack, { spacing: "loose" }, [
