@@ -1,4 +1,4 @@
-# Checkout Extensibility extensions upgrade for Threadwallets 2.0
+# Checkout Extensibility upgrade for Threadwallets 2.0
 
 ## Requirements
 
